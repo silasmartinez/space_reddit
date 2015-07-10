@@ -20,7 +20,15 @@ router.add('/faves', (req, res, url) => {
   console.log('admin')
   if (req.session.get('email')) {
     console.log('success')
-    prep('templates/site/private.html', {}, res)
+
+
+      faves.find({user: req.session.get('email')}, (err, docs) => {
+        if (err) {
+          console.log(err)
+          res.end('DB encountered an error')
+        }
+        prep('templates/site/faves.html', {'faves': docs}, res)
+      })
   } else {
     req.session.flush()
     res.writeHead(302, {'Location': '/'})
@@ -30,7 +38,7 @@ router.add('/faves', (req, res, url) => {
 
 router.add('/faves', (req, res, url) => {
   console.log('faves post')
-
+  console.log(req.session.get('email'))
   var data = ''
   req.on('data', function (chunk) {
     data += chunk
@@ -50,10 +58,15 @@ router.add('/faves', (req, res, url) => {
       res.end()
     })
   })
-}, 'PUT')
+}, 'POST')
 
 router.add('/', (req, res, url) => {
-  prep('templates/site/index.html', {}, res)
+  var obj = {}
+  if (req.session.get('email')) {
+     obj = {username: req.session.get('email')}
+  }
+  console.log(obj)
+  prep('templates/site/index.html', obj, res)
 })
 
 router.add('/register', (req, res, url) => {
@@ -61,7 +74,6 @@ router.add('/register', (req, res, url) => {
 }, 'GET')
 
 router.add('/register', (req, res, url) => {
-
   var data = ''
   req.on('data', function (chunk) {
     data += chunk
@@ -89,9 +101,7 @@ router.add('/login', (req, res, url) => {
   prep('templates/sessions/login.html', {}, res)
 }, 'GET')
 router.add('/login', (req, res, url) => {
-
   var data = ''
-
   req.on('data', function (chunk) {
     data += chunk
   })
@@ -108,7 +118,7 @@ router.add('/login', (req, res, url) => {
       }
       if (bcrypt.compareSync(user.password, doc.password)) {
         req.session.put('email', doc.email)
-        res.writeHead(302, {'Location': '/faves'})
+        res.writeHead(302, {'Location': '/'})
         res.end()
       } else {
         //handle bad password
@@ -120,8 +130,6 @@ router.add('/login', (req, res, url) => {
 }, 'POST')
 
 router.add('/logout', (req, res, url) => {
-  // 1. Flush the session with req.session.flush()
-  // 2. Redirect to homepage
   req.session.flush()
 
   res.writeHead(302, {'Location': '/faves'})

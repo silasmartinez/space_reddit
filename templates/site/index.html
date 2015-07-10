@@ -6,13 +6,27 @@
     <link rel="stylesheet" href="/style.css">
   </head>
   <body>
-    <h1>Homepage</h1>
-    <p><a href="/faves">Go to private page</a></p>
-    <p><a href="/login">Log In</a></p>
-    <p><a href="/register">Create an account</a></p>
+    <!--<h1>Homepage</h1>-->
+    <!--<p><a href="/faves">Go to private page</a></p>-->
+    <!--<p><a href="/login">Log In</a></p>-->
+    <!--<p><a href="/register">Create an account</a></p>-->
+
+    <!--OLD:::<br/>-->
+    <nav>
+      {{#if username}}
+      <p class = 'hello'>
+        Hello! {{username}}
+      </p>
+      <p><a href="/faves">Go To My Faves</a></p>
+      <p><a href="/logout">Log Out</a></p>
+      {{else}}
+      <p><a href="/login">Log In</a></p>
+      <p><a href="/register">Create an account</a></p>
+      {{/if}}
+    </nav>
     <input id="input" type="hidden" value="" >
     <button id="button">Add Sub</button>
-    <nav id="nav"></nav>
+    <!--<nav id="nav"></nav>-->
     <div id="content"></div>
 
     <script type="text/javascript" src="client.js"></script>
