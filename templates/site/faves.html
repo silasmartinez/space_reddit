@@ -7,6 +7,18 @@
 </head>
 <body>
 <h1>Your Space Faves</h1>
+<nav>
+    {{#if username}}
+    <p class = 'hello'>
+        Hello! {{username}}
+    </p>
+    <p><a href="/faves">Go To My Faves</a></p>
+    <p><a href="/logout">Log Out</a></p>
+    {{else}}
+    <p><a href="/login">Log In</a></p>
+    <p><a href="/register">Create an account</a></p>
+    {{/if}}
+</nav>
 
 <div class="">
     {{#faves}}

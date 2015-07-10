@@ -17,7 +17,6 @@ function prep (file, obj, res) {
 }
 
 router.add('/faves', (req, res, url) => {
-  console.log('admin')
   if (req.session.get('email')) {
     console.log('success')
 
@@ -27,7 +26,11 @@ router.add('/faves', (req, res, url) => {
           console.log(err)
           res.end('DB encountered an error')
         }
-        prep('templates/site/faves.html', {'faves': docs}, res)
+        obj = {
+          'faves': docs,
+          'username': req.session.get('email')
+        }
+        prep('templates/site/faves.html', obj, res)
       })
   } else {
     req.session.flush()
