@@ -6,19 +6,20 @@
     <title>Faves</title>
 </head>
 <body>
-<h1>Your Space Faves</h1>
 <nav>
     {{#if username}}
     <p class = 'hello'>
-        Hello! {{username}}
+        Logged In As: {{username}}
     </p>
-    <p><a href="/faves">Go To My Faves</a></p>
+    <p><a href="/faves">Faves</a></p>
     <p><a href="/logout">Log Out</a></p>
     {{else}}
     <p><a href="/login">Log In</a></p>
-    <p><a href="/register">Create an account</a></p>
+    <p><a href="/register">Register</a></p>
     {{/if}}
+    <p><a href="/">Main List</a></p>
 </nav>
+<h3>Reddit Space Faves!</h3>
 
 <div class="">
     {{#faves}}

@@ -11,20 +11,14 @@ var parseDataTable = function() {
   titleArray.forEach(function(elem, i) {
 
     var HTMLString = '';
-    HTMLString += '<form action="/faves" method="POST">';
+    HTMLString += '<form class="registered"  action="/faves" method="POST">';
     HTMLString += '<input type="hidden" name="title" value="' + titleArray[i].data["title"] + '">';
     HTMLString += '<input type="hidden" name="url" value="' + titleArray[i].data["url"] + '">';
-    HTMLString += '<button type="submit">Add To Faves</button>';
+    HTMLString += '<button type="submit">&#9786;</button>';
     HTMLString += '</form>';
-    HTMLString += '<a href="' + titleArray[i].data["url"] + '">' + titleArray[i].data["title"] + '</a>';
+    HTMLString += '<a target="_blank" href="' + titleArray[i].data["url"] + '">' + titleArray[i].data["title"] + '</a><br>';
     content.innerHTML += HTMLString;
 
-    // '<a href="' + titleArray[i].data["url"] + '">' + titleArray[i].data["title"] + '</a>' +
-    //   '<form action="/faves" method="POST">
-    //     <input type="hidden" name="title" value="' + titleArray[i].data["title"] + '">
-    //     <input type="hidden" name="url" value="' + titleArray[i].data["url"] + '">
-    //     <button type="submit">Add To Faves</button>
-    //   </form>';
   });
 };
 
@@ -59,7 +53,7 @@ var makeNavButtons = function(subreddit) {
 };
 
 window.addEventListener('load', function() { // when user clicks submit button
-                                             // makeNavButtons(input.value);
+  // makeNavButtons(input.value);
   localStorage.setItem('reddit', localStorageString());
   content.innerHTML = "";
   var request = new XMLHttpRequest();
@@ -68,13 +62,3 @@ window.addEventListener('load', function() { // when user clicks submit button
   request.addEventListener('load', parseDataTable);
 });
 
-// window.addEventListener('load', function() { //makes buttons persist after refresh
-//   if (localStorage.getItem("reddit") != null) { // Local storage object exists
-//     inputObject = JSON.parse(localStorage.getItem('reddit'))
-//     var inputArray = Object.keys(inputObject).map(function(k) { return inputObject[k] });
-//     inputArray.forEach(makeNavButtons);
-//   } // closes if
-//   else { // No local storage object
-//     console.log("Nothing in local storage.");
-//   }
-// });

@@ -3,9 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
+    <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<h3>login</h3>
+<nav>
+    {{#if username}}
+    <p class = 'hello'>
+        Logged In As: {{username}}
+    </p>
+    <p><a href="/faves">Faves</a></p>
+    <p><a href="/logout">Log Out</a></p>
+    {{else}}
+    <p><a href="/login">Log In</a></p>
+    <p><a href="/register">Register</a></p>
+    {{/if}}
+    <p><a href="/">Main List</a></p>
+</nav>
+<h3>Reddit Space Faves!</h3>
+
 <form action="/login" method="post">
     email: <input type="text" name="email"/>
     password: <input type="password" name="password"/>

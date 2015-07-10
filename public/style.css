@@ -1,5 +1,26 @@
+html, body, div, form, fieldset, legend, label
+{
+  margin: 0;
+  padding: 0;
+}
+
+table
+{
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+th, td
+{
+  text-align: left;
+  vertical-align: top;
+}
+
+h1, h2, h3, h4, h5, h6, th, td, caption { font-weight:normal; }
+
+img { border: 0; }
 body {
-  background-color: white;
+  background-color: #f9f9f9;
   font-family: sans-serif;
   font-weight: 400;
   line-height: 1.45;
@@ -9,4 +30,57 @@ body {
 #button {
   display: none; /*leaves empty space*/
   /*visibility: hidden; // doesn't leave empty space*/
+}
+nav {
+  width: 100%;
+  height: auto;
+  border: 2px solid black;
+  background: white;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  background-image: url("http://www.azastronomy.com/_Media/orion_nebula_complex_wide.jpeg");
+
+
+}
+
+p {
+  padding: 5px;
+  display: inline-block;
+  text-align: center;
+}
+form {
+  display: inline-block;
+}
+h3 {
+text-align: center;
+}
+button {
+  font-size: 1.5em;
+  padding: 0;
+  background-color: #f9f9f9;
+  border: none;
+  color: #49a5ff;
+}
+a {
+  color: #49a5ff;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+nav a{
+  color: #f9f9f9;
+  font-weight: 600;  padding: 2px;
+}
+
+nav a:hover {
+  border: solid thin grey;
+  text-decoration: none;
+}
+
+.hello {
+  color: #f9f9f9;
+  font-weight: 600;  padding: 2px;
+
 }

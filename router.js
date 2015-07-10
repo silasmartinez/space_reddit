@@ -18,20 +18,18 @@ function prep (file, obj, res) {
 
 router.add('/faves', (req, res, url) => {
   if (req.session.get('email')) {
-    console.log('success')
 
-
-      faves.find({user: req.session.get('email')}, (err, docs) => {
-        if (err) {
-          console.log(err)
-          res.end('DB encountered an error')
-        }
-        obj = {
-          'faves': docs,
-          'username': req.session.get('email')
-        }
-        prep('templates/site/faves.html', obj, res)
-      })
+    faves.find({user: req.session.get('email')}, (err, docs) => {
+      if (err) {
+        console.log(err)
+        res.end('DB encountered an error')
+      }
+      obj = {
+        'faves': docs,
+        'username': req.session.get('email')
+      }
+      prep('templates/site/faves.html', obj, res)
+    })
   } else {
     req.session.flush()
     res.writeHead(302, {'Location': '/'})
@@ -40,8 +38,6 @@ router.add('/faves', (req, res, url) => {
 }, 'GET')
 
 router.add('/faves', (req, res, url) => {
-  console.log('faves post')
-  console.log(req.session.get('email'))
   var data = ''
   req.on('data', function (chunk) {
     data += chunk
@@ -66,9 +62,8 @@ router.add('/faves', (req, res, url) => {
 router.add('/', (req, res, url) => {
   var obj = {}
   if (req.session.get('email')) {
-     obj = {username: req.session.get('email')}
+    obj = {username: req.session.get('email')}
   }
-  console.log(obj)
   prep('templates/site/index.html', obj, res)
 })
 
@@ -83,9 +78,7 @@ router.add('/register', (req, res, url) => {
   })
   req.on('end', function () {
     var user = qs.parse(data)
-    console.log(user)
     user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10))
-    console.log(user)
     users.insert(user, function (err, doc) {
       if (err) {
         console.log('err: ', err)
