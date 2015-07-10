@@ -2,18 +2,25 @@ var Rooter = require('rooter-router'),
   fs = require('fs'),
   db = require('monk')('localhost/space'),
   users = db.get('users'),
+  faves = db.get('faves'),
   qs = require('qs'),
-  view = require('./view'),
   mime = require('mime'),
   bcrypt = require('bcryptjs'),
+  bars = require('handlebars'),
   router = new Rooter
+
+function prep (file, obj, res) {
+  res.setHeader('Content-Type', 'text/html')
+  var file = fs.readFileSync(file)
+  var template = bars.compile(file.toString())(obj)
+  res.end(template)
+}
 
 router.add('/faves', (req, res, url) => {
   console.log('admin')
   if (req.session.get('email')) {
     console.log('success')
-    var template = view.render('site/private')
-    res.end(template)
+    prep('templates/site/private.html', {}, res)
   } else {
     req.session.flush()
     res.writeHead(302, {'Location': '/'})
@@ -22,20 +29,35 @@ router.add('/faves', (req, res, url) => {
 }, 'GET')
 
 router.add('/faves', (req, res, url) => {
+  console.log('faves post')
 
+  var data = ''
+  req.on('data', function (chunk) {
+    data += chunk
+  })
+  req.on('end', function () {
+    var fave = qs.parse(data)
+    console.log(fave)
+    fave.user = req.session.get('email')
+    faves.insert(fave, function (err, doc) {
+      if (err) {
+        console.log('err: ', err)
+        res.writeHead(302, {'Location': '/'})
+        res.end()
+        return
+      }
+      res.writeHead(302, {'Location': '/'})
+      res.end()
+    })
+  })
 }, 'PUT')
 
 router.add('/', (req, res, url) => {
-  // Render the homepage
-  var template = view.render('site/index', {})
-  res.end(template)
+  prep('templates/site/index.html', {}, res)
 })
 
 router.add('/register', (req, res, url) => {
-  res.setHeader('Content-Type', 'text/html')
-  var template = view.render('sessions/register', {title: 'Log In'})
-  res.end(template)
-
+  prep('templates/sessions/register.html', {}, res)
 }, 'GET')
 
 router.add('/register', (req, res, url) => {
@@ -64,10 +86,7 @@ router.add('/register', (req, res, url) => {
 }, 'POST')
 
 router.add('/login', (req, res, url) => {
-  // 1. Render the login page with the view module
-  var template = view.render('sessions/login', {})
-  res.end(template)
-
+  prep('templates/sessions/login.html', {}, res)
 }, 'GET')
 router.add('/login', (req, res, url) => {
 
