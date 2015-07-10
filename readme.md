@@ -1,3 +1,1 @@
-# Create User authenticated
-
-Follow the instructions in `router.js`
+# space_reddit
