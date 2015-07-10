@@ -1,14 +1,12 @@
 var Rooter = require('rooter-router'),
   fs = require('fs'),
-  db = require('monk')('localhost/music'),
+  db = require('monk')('localhost/space'),
   users = db.get('users'),
   qs = require('qs'),
   view = require('./view'),
   mime = require('mime'),
   bcrypt = require('bcryptjs'),
   router = new Rooter
-
-
 
 router.add('/faves', (req, res, url) => {
   console.log('admin')
@@ -21,12 +19,11 @@ router.add('/faves', (req, res, url) => {
     res.writeHead(302, {'Location': '/'})
     res.end()
   }
-
 }, 'GET')
 
 router.add('/faves', (req, res, url) => {
 
-},'PUT')
+}, 'PUT')
 
 router.add('/', (req, res, url) => {
   // Render the homepage
@@ -35,84 +32,86 @@ router.add('/', (req, res, url) => {
 })
 
 router.add('/register', (req, res, url) => {
-  if (req.method === 'GET') {
-    res.setHeader('Content-Type', 'text/html')
-    var template = view.render('sessions/register', {title: 'Log In'})
-    res.end(template)
-  }
-  if (req.method === 'POST') {
-    var data = ''
-    req.on('data', function (chunk) {
-      data += chunk
-    })
-    req.on('end', function () {
-      var user = qs.parse(data)
-      console.log(user)
-      user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10))
-      console.log(user)
-      users.insert(user, function (err, doc) {
-        if (err) {
-          console.log('err: ', err)
-          res.writeHead(302, {'Location': '/'})
-          res.end()
-          return
-        }
-        req.session.put('email', doc.email)
+  res.setHeader('Content-Type', 'text/html')
+  var template = view.render('sessions/register', {title: 'Log In'})
+  res.end(template)
+
+}, 'GET')
+
+router.add('/register', (req, res, url) => {
+
+  var data = ''
+  req.on('data', function (chunk) {
+    data += chunk
+  })
+  req.on('end', function () {
+    var user = qs.parse(data)
+    console.log(user)
+    user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10))
+    console.log(user)
+    users.insert(user, function (err, doc) {
+      if (err) {
+        console.log('err: ', err)
         res.writeHead(302, {'Location': '/'})
         res.end()
-      })
+        return
+      }
+      req.session.put('email', doc.email)
+      res.writeHead(302, {'Location': '/'})
+      res.end()
     })
-  }
-})
+  })
+}, 'POST')
 
 router.add('/login', (req, res, url) => {
-  if (req.method === 'GET') {
-    // 1. Render the login page with the view module
-    var template = view.render('sessions/login', {})
-    res.end(template)
+  // 1. Render the login page with the view module
+  var template = view.render('sessions/login', {})
+  res.end(template)
 
-  }
-  if (req.method === 'POST') {
-    var data = ''
+}, 'GET')
+router.add('/login', (req, res, url) => {
 
-    req.on('data', function (chunk) {
-      data += chunk
+  var data = ''
+
+  req.on('data', function (chunk) {
+    data += chunk
+  })
+
+  req.on('end', function () {
+    var user = qs.parse(data)
+    console.log(user)
+    users.findOne({email: user.email}, function (err, doc) {
+      console.log(doc)
+      if (err || !doc) {
+        res.writeHead(302, {'Location': '/'})
+        res.end()
+        return
+      }
+      if (bcrypt.compareSync(user.password, doc.password)) {
+        req.session.put('email', doc.email)
+        res.writeHead(302, {'Location': '/faves'})
+        res.end()
+      } else {
+        //handle bad password
+        res.end('Bad login!')
+      }
     })
+  })
 
-    req.on('end', function () {
-      var user = qs.parse(data)
-      console.log(user)
-      users.findOne({email: user.email}, function (err, doc) {
-        console.log(doc)
-        if (err || ! doc) {
-          res.writeHead(302, {'Location': '/'})
-          res.end()
-          return
-        }
-        if (bcrypt.compareSync(user.password, doc.password)) {
-          req.session.put('email', doc.email)
-          res.writeHead(302, {'Location': '/admin'})
-          res.end()
-        } else {
-          //handle bad password
-        }
-      })
-    })
-  }
-})
+}, 'POST')
 
 router.add('/logout', (req, res, url) => {
   // 1. Flush the session with req.session.flush()
   // 2. Redirect to homepage
   req.session.flush()
 
-  res.writeHead(302, {'Location': '/admin'})
+  res.writeHead(302, {'Location': '/faves'})
   res.end()
 })
 
 router.add('/*', (req, res, url) => {
   res.setHeader('Content-Type', mime.lookup(req.url))
-  fs.readFile('.' + req.url, function (err, file) {
+  fs.readFile('./public/' + req.url, function (err, file) {
     if (err) {
       res.setHeader('Content-Type', 'text/html')
       res.end('404')

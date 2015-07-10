@@ -5,3 +5,8 @@ body {
   line-height: 1.45;
   color: #333;
 }
+
+#button {
+  display: none; /*leaves empty space*/
+  /*visibility: hidden; // doesn't leave empty space*/
+}
